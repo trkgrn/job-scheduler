@@ -206,6 +206,8 @@ Key environment variables (configured in `.env`):
 # Project
 PROJECT_NAME=job-scheduler-be
 APP_PORT=8080
+FRONTEND_PORT=3001
+FRONTEND_API_URL=http://localhost:8080
 
 # Database
 POSTGRESQL_HOST_PORT=5432
@@ -538,7 +540,8 @@ For local development, you'll run the backend application from your IDE while al
    ```
 
 3. **Access**:
-   - API: http://localhost:8080
+   - Frontend UI: http://localhost:3001
+   - Backend API: http://localhost:8080
    - Swagger UI: http://localhost:8080/swagger-ui.html
    - Actuator: http://localhost:8080/actuator
    - Grafana: http://localhost:3000 (admin/admin)
@@ -551,14 +554,25 @@ For local development, you'll run the backend application from your IDE while al
 docker-compose up -d
 ```
 
-This starts:
-- Backend application (if uncommented)
-- PostgreSQL
-- Elasticsearch
-- Logstash
-- Kibana
-- Prometheus
-- Grafana
+This starts all services:
+- **Backend Application** (`job-scheduler-app`): Spring Boot application on port 8080
+- **Frontend Application** (`job-scheduler-frontend`): React application on port 3001
+- **PostgreSQL**: Database on port 5432
+- **Elasticsearch**: Log storage on port 9200
+- **Logstash**: Log processing on port 5000
+- **Kibana**: Log visualization on port 5601
+- **Prometheus**: Metrics collection on port 9090
+- **Grafana**: Metrics visualization on port 3000
+
+**Access Points:**
+- Frontend UI: `http://localhost:3001`
+- Backend API: `http://localhost:8080`
+- Swagger UI: `http://localhost:8080/swagger-ui.html`
+- Grafana: `http://localhost:3000` (admin/admin)
+- Kibana: `http://localhost:5601`
+- Prometheus: `http://localhost:9090`
+
+**Note:** Make sure to create `.env` file from `env.example` before running docker-compose.
 
 ## Monitoring & Observability
 
