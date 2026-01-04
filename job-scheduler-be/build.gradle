@@ -1,0 +1,77 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm' version '1.9.22'
+    id 'org.jetbrains.kotlin.plugin.spring' version '1.9.22'
+    id 'org.jetbrains.kotlin.plugin.jpa' version '1.9.22'
+    id 'org.springframework.boot' version '3.3.5' apply false
+    id 'io.spring.dependency-management' version '1.1.6' apply false
+}
+
+apply from: 'dependencies.gradle'
+
+allprojects {
+    group = 'com.trkgrn.jobscheduler'
+    version = '0.0.1'
+
+    repositories {
+        mavenCentral()
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'java-library'
+    apply plugin: 'org.jetbrains.kotlin.jvm'
+    apply plugin: 'org.jetbrains.kotlin.plugin.spring'
+    apply plugin: 'org.jetbrains.kotlin.plugin.jpa'
+    apply plugin: 'io.spring.dependency-management'
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(versions.java)
+        }
+    }
+
+    compileJava {
+        options.compilerArgs.add('-parameters')
+    }
+
+    compileKotlin {
+        kotlinOptions {
+            jvmTarget = versions.java
+        }
+    }
+
+    compileTestKotlin {
+        kotlinOptions {
+            jvmTarget = versions.java
+        }
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.boot:spring-boot-dependencies:${versions.springBoot}"
+            mavenBom "org.springframework.modulith:spring-modulith-bom:${versions.springModulith}"
+        }
+    }
+
+    dependencies {
+        implementation 'org.slf4j:slf4j-api'
+        
+        // Kotlin
+        implementation libs.kotlinStdlib
+        implementation libs.kotlinReflect
+        implementation libs.jacksonModuleKotlin
+
+        // MapStruct
+        implementation libs.mapstruct
+        annotationProcessor libs.mapstructProcessor
+        
+        testImplementation libs.springBootStarterTest
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+}
+

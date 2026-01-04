@@ -1,0 +1,169 @@
+# Environment files
+.env
+.env.local
+.env.*.local
+*.env
+
+# IDE - IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# IDE - Eclipse
+.classpath
+.project
+.settings/
+bin/
+.metadata
+
+# IDE - VS Code
+.vscode/
+*.code-workspace
+
+# IDE - NetBeans
+nbproject/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*~
+
+# Backend - Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+gradle-app.setting
+!settings.gradle
+!build.gradle
+!dependencies.gradle
+
+# Backend - Java
+*.class
+*.log
+*.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+replay_pid*
+
+# Backend - Kotlin
+*.kotlin_module
+*.kt.class
+
+# Backend - Build outputs
+**/build/
+**/out/
+**/target/
+**/libs/
+**/classes/
+**/generated/
+**/tmp/
+**/snapshot/
+
+# Frontend - Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Frontend - Build outputs
+build/
+dist/
+.next/
+out/
+.cache/
+
+# Frontend - Testing
+coverage/
+.nyc_output/
+*.lcov
+
+# Frontend - Environment
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Docker
+*.pid
+*.seed
+*.pid.lock
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+.cache/
+
+# Application specific
+*.pid
+*.log
+*.out
+
+# Package files
+*.jar
+*.war
+*.ear
+*.nar
+
+# Compiled class files
+*.class
+
+# Maven (if used)
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Spring Boot
+spring-boot-*.log
+
+# Application logs
+application.log
+application-*.log
+
+# Quartz
+quartz.properties.local
+
+# Local configuration
+application-local.yml
+application-local.properties
+

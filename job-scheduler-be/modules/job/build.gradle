@@ -1,0 +1,11 @@
+dependencies {
+    api project(':platform:infra')
+    
+    implementation 'org.springframework.modulith:spring-modulith-starter-core'
+    implementation 'org.springframework.modulith:spring-modulith-starter-jpa'
+    
+    implementation libs.springBootStarterQuartz
+    implementation libs.springRetry
+    implementation libs.springAspects
+}
+

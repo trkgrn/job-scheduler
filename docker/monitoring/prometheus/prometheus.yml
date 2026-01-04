@@ -1,0 +1,24 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  # 1. PROD Profile: Scrape the application running inside Docker network
+  - job_name: 'job-scheduler-app-prod'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['job-scheduler-app:8080']
+        labels:
+          application: 'job-scheduler-be'
+          env: 'prod'
+
+  # 2. DEV Profile: Scrape the application running on Host Machine (Localhost)
+  # Access host machine from container via host.docker.internal
+  - job_name: 'job-scheduler-app-dev'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['host.docker.internal:8080']
+        labels:
+          application: 'job-scheduler-be'
+          env: 'dev'
+

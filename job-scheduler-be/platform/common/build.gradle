@@ -1,0 +1,12 @@
+dependencies {
+    api libs.springBootStarterValidation
+    api 'org.slf4j:slf4j-api'
+    api 'jakarta.persistence:jakarta.persistence-api'
+    api 'org.springframework.data:spring-data-commons'
+    api 'org.springframework.data:spring-data-jpa'
+    
+    api libs.springBootStarterWeb
+
+    api libs.micrometerRegistryPrometheus
+}
+

@@ -1,0 +1,12 @@
+dependencies {
+    api project(':platform:common')
+    
+    api libs.springBootStarterWeb
+    api libs.springBootStarterDataJpa
+    api libs.springBootStarterActuator
+
+    runtimeOnly libs.postgresql
+
+    api libs.springdocOpenapi
+}
+

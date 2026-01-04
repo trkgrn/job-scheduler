@@ -1,0 +1,7 @@
+# Job module specific configuration
+
+job:
+  execution:
+    # Timeout in minutes for stuck execution detection
+    # Executions running longer than this will be marked as FAILED
+    timeout-minutes: 60

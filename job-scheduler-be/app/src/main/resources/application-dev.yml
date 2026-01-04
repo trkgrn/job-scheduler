@@ -1,0 +1,60 @@
+server:
+  port: 8080
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        default_schema: public
+        format_sql: true
+        hbm2ddl:
+          create_namespaces: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/job_scheduler_db
+    username: postgres
+    password: password
+    driver-class-name: org.postgresql.Driver
+
+  quartz:
+    job-store-type: jdbc
+    jdbc:
+      initialize-schema: always
+    properties:
+      org:
+        quartz:
+          scheduler:
+            instanceName: JobSchedulerScheduler
+            instanceId: ${KUBERNETES_POD_NAME:${NODE_ID:AUTO}}
+          jobStore:
+            isClustered: true
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
+            tablePrefix: QRTZ_
+          threadPool:
+            threadCount: 10
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v1/jobs/v3/api-docs
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,loggers,httptrace
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%X{correlationId:-}] [%X{traceId:-}] %logger{36} - %msg%n"
+  level:
+    com.trkgrn.jobscheduler: DEBUG
+
+logstash:
+  destination: localhost:5000
+

@@ -1,0 +1,138 @@
+version: '3.8'
+
+name: ${PROJECT_NAME}
+
+volumes:
+  postgres-vlm:
+    name: '${PROJECT_NAME}-postgres-vlm'
+  elasticsearch-vlm:
+    name: '${PROJECT_NAME}-elasticsearch-vlm'
+  prometheus-vlm:
+    name: '${PROJECT_NAME}-prometheus-vlm'
+  grafana-vlm:
+    name: '${PROJECT_NAME}-grafana-vlm'
+
+services:
+  postgres:
+    image: postgres:${POSTGRESQL_VERSION}
+    container_name: '${PROJECT_NAME}-postgres'
+    ports:
+      - "${POSTGRESQL_HOST_PORT}:5432"
+    volumes:
+      - postgres-vlm:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=${POSTGRESQL_USERNAME}
+      - POSTGRES_PASSWORD=${POSTGRESQL_PASSWORD}
+      - POSTGRES_DB=${POSTGRESQL_DATABASE}
+    networks:
+      - job-scheduler-network
+
+  elasticsearch:
+    image: 'docker.elastic.co/elasticsearch/elasticsearch:${ELASTICSEARCH_VERSION}'
+    container_name: '${PROJECT_NAME}-elasticsearch'
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "${ELASTICSEARCH_HOST_PORT}:9200"
+      - "${ELASTICSEARCH_TRANSPORT_PORT}:9300"
+    volumes:
+      - elasticsearch-vlm:/usr/share/elasticsearch/data
+    networks:
+      - job-scheduler-network
+
+  logstash:
+    image: 'docker.elastic.co/logstash/logstash:${LOGSTASH_VERSION}'
+    container_name: '${PROJECT_NAME}-logstash'
+    volumes:
+      - ./docker/monitoring/logstash/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+      - ./docker/monitoring/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+    ports:
+      - "${LOGSTASH_HOST_PORT}:5000"
+    depends_on:
+      - elasticsearch
+    networks:
+      - job-scheduler-network
+
+  kibana:
+    image: 'docker.elastic.co/kibana/kibana:${KIBANA_VERSION}'
+    container_name: '${PROJECT_NAME}-kibana'
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "${KIBANA_HOST_PORT}:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - job-scheduler-network
+
+  prometheus:
+    image: 'prom/prometheus:${PROMETHEUS_VERSION}'
+    container_name: '${PROJECT_NAME}-prometheus'
+    ports:
+      - "${PROMETHEUS_HOST_PORT}:9090"
+    volumes:
+      - ./docker/monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-vlm:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    networks:
+      - job-scheduler-network
+
+  grafana:
+    image: 'grafana/grafana:${GRAFANA_VERSION}'
+    container_name: '${PROJECT_NAME}-grafana'
+    ports:
+      - "${GRAFANA_HOST_PORT}:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana-vlm:/var/lib/grafana
+    depends_on:
+      - prometheus
+    networks:
+      - job-scheduler-network
+
+  job-scheduler-app:
+    build:
+      context: ./job-scheduler-be
+      dockerfile: Dockerfile
+    container_name: '${PROJECT_NAME}-app'
+    ports:
+      - "${APP_PORT}:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - POSTGRESQL_HOST_PORT=postgres
+      - POSTGRESQL_DOCKER_PORT=5432
+      - POSTGRESQL_DATABASE=${POSTGRESQL_DATABASE}
+      - POSTGRESQL_USERNAME=${POSTGRESQL_USERNAME}
+      - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
+      - LOGSTASH_DESTINATION=logstash:5000
+    depends_on:
+      - postgres
+      - elasticsearch
+      - logstash
+    networks:
+      - job-scheduler-network
+
+  job-scheduler-frontend:
+    build:
+      context: ./job-scheduler-frontend
+      dockerfile: Dockerfile
+    container_name: '${PROJECT_NAME}-frontend'
+    ports:
+      - "${FRONTEND_PORT:-3001}:3001"
+    depends_on:
+      - job-scheduler-app
+    networks:
+      - job-scheduler-network
+
+networks:
+  job-scheduler-network:
+    driver: bridge
+

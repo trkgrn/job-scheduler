@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: job-scheduler-be
+  profiles:
+    active: dev
+    include: 
+      - job
+  messages:
+    basename: messages, messages_job
+    encoding: UTF-8
+

@@ -1,0 +1,4 @@
+pipeline.ecs_compatibility: disabled
+config.support_escapes: true
+pipeline.ordered: auto
+

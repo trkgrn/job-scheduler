@@ -1,0 +1,19 @@
+plugins {
+    id 'org.springframework.boot'
+}
+
+dependencies {
+    implementation project(':platform:common')
+    implementation project(':platform:infra')
+    implementation project(':modules:job')
+    
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation libs.springRetry
+    implementation libs.springAspects
+    runtimeOnly 'org.springframework.modulith:spring-modulith-actuator'
+    runtimeOnly 'org.springframework.modulith:spring-modulith-observability'
+    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
+    
+    implementation libs.logstashLogbackEncoder
+}
+
